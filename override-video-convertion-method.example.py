@@ -10,5 +10,5 @@ class SubScraper(Scraper):
 
 # By adhering to this contract, you can write any custom video processor.
 # Please check 'video_converters.py' file for more details
-scraper = Scraper(source_url='https://www.tiktok.com/@pkllipe')
+scraper = Scraper(source_url='https://www.tiktok.com/@pkllipe', is_scroll_to_bottom=False)
 scraper.process()

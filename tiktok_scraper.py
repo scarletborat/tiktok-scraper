@@ -6,7 +6,7 @@ import time
 import urllib
 import random
 import os
-from video_converters import ssstik_converter, snaptik_converter
+from video_converters import snaptik_converter
 
 class Scraper():
     def __init__(
@@ -16,6 +16,7 @@ class Scraper():
             source_video_url_selector = '.tiktok-yz6ijl-DivWrapper a',
             source_video_title_selector = '.tiktok-j2a19r-SpanText',
             user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36',
+            is_scroll_to_bottom = True,
             download_directory = 'videos',
             scroll_pause_time=3
         ):
@@ -24,9 +25,11 @@ class Scraper():
         self.source_video_title_selector = source_video_title_selector
         self.root_element_selector = root_element_selector
         self.scroll_pause_time = scroll_pause_time
+        self.is_scroll_to_bottom = is_scroll_to_bottom
         self.download_directory = download_directory
         self.driver = None
         self.user_agent = user_agent
+
         self.create_directory()
 
     def create_directory(self):
@@ -63,12 +66,13 @@ class Scraper():
     
     def process(self):
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
+        chrome_options.add_argument('--headless')
 
         self.driver = webdriver.Chrome(options=chrome_options)
         self.driver.get(self.source_url)
 
-        # self.scroll_to_bottom(self.driver)
+        if self.is_scroll_to_bottom:
+            self.scroll_to_bottom(self.driver)
         
         root_elements = self.driver.find_elements(By.CSS_SELECTOR, self.root_element_selector)
         video_links = [{
@@ -76,10 +80,13 @@ class Scraper():
             'title': root_element.find_element(By.CSS_SELECTOR, self.source_video_title_selector).text.strip()
         } for root_element in root_elements]
 
-        print(video_links)
+        print(f"There are {len(video_links)} links selected for conversion\n")
 
         for i, link in enumerate(video_links):
+            print(f"Video processing begins\nLink: {link['url']}\nTitle: {link['title']}\n")
             download_link = self.convert_video(link['url'])
+            print('File saving...\n')
             self.download_video(download_link, id=i, title=link['title'])
+            print('The file has been successfully saved\n')
             del video_links[i]
             time.sleep(random.randint(3, 5))

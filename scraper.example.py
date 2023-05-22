@@ -3,5 +3,5 @@
 
 from tiktok_scraper import Scraper
 
-scraper = Scraper(source_url='https://www.tiktok.com/@pkllipe')
+scraper = Scraper(source_url='https://www.tiktok.com/@pkllipe', is_scroll_to_bottom=False)
 scraper.process()
