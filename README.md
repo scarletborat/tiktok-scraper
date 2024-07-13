@@ -49,7 +49,7 @@ class SubScraper(Scraper):
       # Your converter implementation
 
 source_url = 'https://www.tiktok.com/your_channel'
-scraper = Scraper(source_url)
+scraper = SubScraper(source_url)
 scraper.process()
 ```
 For more details 'override-video-convertion-method.example.py'
